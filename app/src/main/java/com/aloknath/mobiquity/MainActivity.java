@@ -82,8 +82,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         mDialog = new ProgressDialog(this);
 
         logIn = (Button) findViewById(R.id.dropbox_login);
@@ -433,6 +431,8 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Toast.makeText(this,"Connection the location services Failed", Toast.LENGTH_SHORT).show();
     }
+
+    // A Async Task To Fetch The Files From DropBox
 
     private class ListDropboxFiles extends AsyncTask<Void, Void, ArrayList<File>> {
 

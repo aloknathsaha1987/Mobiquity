@@ -1,28 +1,22 @@
 package com.aloknath.mobiquity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
-import com.facebook.HttpMethod;
 import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
@@ -41,6 +35,7 @@ public class ImageDisplayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.images_display);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         uiLifecycleHelper = new UiLifecycleHelper(this, null);
@@ -102,6 +97,8 @@ public class ImageDisplayActivity extends Activity {
                 publishFeedDialog(bmp);
             }
 
+        } else if(item.getItemId() == android.R.id.home){
+            finish();
         }
 
         return true;

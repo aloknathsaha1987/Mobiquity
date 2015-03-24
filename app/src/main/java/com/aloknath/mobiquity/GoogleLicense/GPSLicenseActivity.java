@@ -2,7 +2,7 @@ package com.aloknath.mobiquity.GoogleLicense;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.widget.TextView;
 import com.aloknath.mobiquity.R;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -17,6 +17,7 @@ public class GPSLicenseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gps_license);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         String license = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this);
         TextView tv = (TextView)findViewById(R.id.gps_license);
@@ -26,6 +27,15 @@ public class GPSLicenseActivity extends Activity {
             tv.setText("Google Play Services is not Installed on this device.");
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return true;
+    }
+
 
     @Override
     public void onBackPressed() {

@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -48,6 +49,7 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (isOnline()) {
             if (servicesOK()) {
@@ -118,6 +120,15 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
     {
         removeEverything();
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            removeEverything();
+            finish();
+        }
+        return true;
     }
 
     @Override
