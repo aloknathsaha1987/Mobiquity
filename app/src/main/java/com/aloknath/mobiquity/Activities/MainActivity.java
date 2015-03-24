@@ -93,9 +93,11 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         listFiles.setOnClickListener(this);
 
         loggedIn(false);
+
         AndroidAuthSession session;
         AppKeyPair pair = new AppKeyPair(ACCESS_KEY, ACCESS_SECRET);
 
+        // Retrieve the Keys from Shared Preferences
         SharedPreferences prefs = getSharedPreferences(DROPBOX_NAME, 0);
         String key = prefs.getString(ACCESS_KEY, null);
         String secret = prefs.getString(ACCESS_SECRET, null);
@@ -131,6 +133,8 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         }
     }
 
+    // To Check Whether The User Has Logged In and appropriately enable/ disable the image
+    // upload and list_images buttons.
     public void loggedIn(boolean isLogged) {
         isLoggedIn = isLogged;
         uploadFile.setEnabled(isLogged);
@@ -190,7 +194,7 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            
+
             case R.id.dropbox_login:
                 if (isOnline()) {
                     if (isLoggedIn) {
@@ -398,10 +402,8 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         if(mLocation == null){
             Toast.makeText(this, "My Location is not available", Toast.LENGTH_SHORT).show();
         }else {
-
             setFileName();
         }
-
     }
 
     private void setFileName() {

@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.aloknath.mobiquity.R;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
@@ -38,7 +37,6 @@ public class ImageDisplayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.images_display);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         uiLifecycleHelper = new UiLifecycleHelper(this, null);
         uiLifecycleHelper.onCreate(savedInstanceState);
@@ -106,6 +104,7 @@ public class ImageDisplayActivity extends Activity {
         return true;
     }
 
+    // To Share The Photo onto Facebook along with the location where the photo was taken.
     private void publishFeedDialog(Bitmap img) {
 
         Bundle params = new Bundle();

@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.aloknath.mobiquity.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -59,7 +58,6 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
 
                 Bundle bundle = getIntent().getExtras();
                 imageCoordinates = (List<String>) bundle.getSerializable("ImageCoordinates");
-
 
                 if (initMap()) {
 
@@ -140,7 +138,6 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
         if(mLocation == null){
             Toast.makeText(this, "My Location is not available", Toast.LENGTH_SHORT).show();
         }else {
-
             try {
                 displayMyLocation();
             } catch (IOException e) {
@@ -183,6 +180,7 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
         }
     }
 
+    // Goto your current location and display the images taken around your area.
     protected void gotoCurrentLocation() throws IOException {
 
         Location mLocation = mLocationClient.getLastLocation();
@@ -233,6 +231,7 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
         }
     }
 
+    // Add Markers For Each Image
     private void setMarker(double lat, double lng, String locality) {
 
         MarkerOptions markerOptions = new MarkerOptions()
@@ -266,6 +265,7 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
         markers.add(mMap.addMarker(markerOptions));
     }
 
+    // Remove All the Markers
     private void removeEverything() {
 
         for (Marker marker : markers) {
@@ -273,6 +273,5 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
         }
         markers.clear();
     }
-
 
 }
