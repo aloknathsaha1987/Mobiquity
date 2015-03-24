@@ -1,22 +1,28 @@
 package com.aloknath.mobiquity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
+import com.facebook.HttpMethod;
 import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
@@ -29,6 +35,7 @@ public class ImageDisplayActivity extends Activity {
     private Bitmap bmp;
     private byte[] data;
     private UiLifecycleHelper uiLifecycleHelper;
+    private String city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,7 @@ public class ImageDisplayActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         data = extras.getByteArray("picture");
+        city = extras.getString("city");
 
         bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
@@ -99,12 +107,11 @@ public class ImageDisplayActivity extends Activity {
         return true;
     }
 
-
-    private void publishFeedDialog(Bitmap bmp) {
+    private void publishFeedDialog(Bitmap img) {
 
         Bundle params = new Bundle();
-        params.putString("name", "Facebook SDK for Android");
-        params.putParcelable("picture", bmp);
+        params.putString("name", city);
+        params.putParcelable("picture", img);
 
         WebDialog feedDialog = (
                 new WebDialog.FeedDialogBuilder(this,

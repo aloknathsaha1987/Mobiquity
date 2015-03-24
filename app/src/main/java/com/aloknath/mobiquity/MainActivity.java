@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -369,6 +371,7 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         byte[] b = baos.toByteArray();
         Intent intent = new Intent(MainActivity.this, ImageDisplayActivity.class);
         intent.putExtra("picture", b);
+        intent.putExtra("city", files.get(position).split(":")[0]);
         startActivity(intent);
 
     }
@@ -392,7 +395,19 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
             Location mLocation = mLocationClient.getLastLocation();
             longitude = mLocation.getLongitude();
             latitude = mLocation.getLatitude();
-            file = new File(getPath(),String.valueOf(longitude) + ":" +  String.valueOf(latitude) + ".jpg");
+            Geocoder gc = new Geocoder(this);
+            List<Address> list = null;
+            try {
+                list = gc.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Address add = list.get(0);
+            String city = add.getLocality();
+
+
+            file = new File(getPath(),city + ":" + String.valueOf(longitude) + ":" +  String.valueOf(latitude) + ".jpg" );
+
         }else {
             file = new File(getPath(), new Date().getTime() + ".jpg");
         }

@@ -183,11 +183,12 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
                     Log.i(" The Name of the image file 1234: ", coordinate);
                     // First Extract the longitude and latitude from the names passed
                     String[] splited = coordinate.split(":");
-                    longitude = Double.parseDouble(splited[0]);
-                    latitude = Double.parseDouble(splited[1].split(".jpg")[0]);
+                    longitude = Double.parseDouble(splited[1]);
+                    latitude = Double.parseDouble(splited[2].split(".jpg")[0]);
+                    String locality = splited[0];
 
                     // Set the Markers for the images as per their Latitudes and Longitudes
-                    setMarker(latitude, longitude);
+                    setMarker(latitude, longitude, locality);
 
                     // Set a Latitude and Longitude of where you are
                     LatLng latLng = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
@@ -196,7 +197,7 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
                     Geocoder gc = new Geocoder(this);
                     List<Address> list = gc.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
                     Address add = list.get(0);
-                    String locality = "This is Me";
+                    locality = "This is Me";
                     String country = add.getCountryName();
                     setMarker(country, locality, mLocation.getLatitude(), mLocation.getLongitude());
 
@@ -219,11 +220,12 @@ public class MapDisplayActivity extends Activity implements GooglePlayServicesCl
         }
     }
 
-    private void setMarker(double lat, double lng) {
+    private void setMarker(double lat, double lng, String locality) {
 
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(new LatLng(lat, lng))
                 .anchor(.5f, .5f)
+                .title(locality)
                 .icon(BitmapDescriptorFactory.defaultMarker(
                         BitmapDescriptorFactory.HUE_CYAN
                 ))
