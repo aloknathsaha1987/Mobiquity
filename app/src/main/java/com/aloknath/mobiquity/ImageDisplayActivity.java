@@ -23,6 +23,7 @@ public class ImageDisplayActivity extends Activity {
         Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
 
         imageView.setImageBitmap(bmp);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
     }
 

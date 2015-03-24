@@ -278,6 +278,35 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
                         try {
                             session.finishAuthentication();
 
+                            // Compress The File Before Uploading
+
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                            Bitmap bitmap = null;
+
+                            try {
+                                bitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                            byte[] bytes = baos.toByteArray();
+
+                            Log.i("File Length Before Compression: ", String.valueOf(file.length()));
+
+                            FileOutputStream fos;
+                            try {
+                                fos = new FileOutputStream(file);
+                                fos.write(bytes);
+                                fos.flush();
+                                fos.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            Log.i("File Length After Compression: ", String.valueOf(file.length()));
+
                             UploadFileToDropbox upload = new UploadFileToDropbox(this, dropbox,
                                     FILE_DIR, file);
                             upload.execute();
@@ -352,7 +381,7 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
             e.printStackTrace();
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] b = baos.toByteArray();
         Intent intent = new Intent(MainActivity.this, ImageDisplayActivity.class);
         intent.putExtra("picture", b);
