@@ -4,5 +4,7 @@
     <string name="app_name">Mobiquity</string>
     <string name="google_license">Google Play License</string>
     <string name="google_maps">Google Maps</string>
+    <string name="app_id">1616548011914818</string>
+    <string name="title_facebook_login">Facebook Login</string>
 
 </resources>

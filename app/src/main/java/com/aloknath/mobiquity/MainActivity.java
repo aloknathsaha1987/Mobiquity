@@ -21,6 +21,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,13 +75,12 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
     private ProgressDialog mDialog;
     private List<Bitmap> imagesBitmap;
     private ArrayList<String> files;
-
     private LocationClient mLocationClient;
-
     private double latitude;
     private double longitude;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
     private boolean startGoogleMaps = false;
+    private List<String> shareAddress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -471,6 +474,11 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
                     FileOutputStream outputStream = new FileOutputStream(file);
                     dropbox.getFile("/Images_Mobiquity/" + entry.fileName(), null, outputStream, null);
                     image_files.add(file);
+
+                    DropboxAPI.DropboxLink shareLink = dropbox.share(entry.path);
+//
+//                    shareAddress.add(getShareURL(shareLink.url).replaceFirst("https://www", "https://dl"));
+                    Log.i("dropbox share link " , shareLink.url);
                 }
 
             } catch (DropboxException e) {
@@ -505,6 +513,28 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
 
         }
 
+    }
+
+    String getShareURL(String strURL) {
+        URLConnection conn = null;
+        String redirectedUrl = null;
+        try {
+            URL inputURL = new URL(strURL);
+            conn = inputURL.openConnection();
+            conn.connect();
+
+            InputStream is = conn.getInputStream();
+            System.out.println("Redirected URL: " + conn.getURL());
+            redirectedUrl = conn.getURL().toString();
+            is.close();
+
+        } catch (MalformedURLException e) {
+//            Log.d(TAG, "Please input a valid URL");
+        } catch (IOException ioe) {
+//            Log.d(TAG, "Can not connect to the URL");
+        }
+
+        return redirectedUrl;
     }
 
     private void refreshDisplay() {
