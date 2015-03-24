@@ -21,14 +21,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Environment;
@@ -56,7 +51,6 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.MapFragment;
 
 public class MainActivity extends ListActivity implements OnClickListener, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
     private DropboxAPI<AndroidAuthSession> dropbox;
@@ -80,7 +74,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
     private double longitude;
     private static final int GPS_ERRORDIALOG_REQUEST = 9001;
     private boolean startGoogleMaps = false;
-    private List<String> shareAddress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -361,18 +354,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-//
-//        if(imagesBitmap.size()>0) {
-//            Bitmap bitmap = imagesBitmap.get(position);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//
-//            byte[] b = baos.toByteArray();
-//
-//            Intent intent = new Intent(MainActivity.this, ImageDisplayActivity.class);
-//            intent.putExtra("picture", b);
-//            startActivity(intent);
-//        }
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -389,7 +370,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         Intent intent = new Intent(MainActivity.this, ImageDisplayActivity.class);
         intent.putExtra("picture", b);
         startActivity(intent);
-
 
     }
 
@@ -475,10 +455,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
                     dropbox.getFile("/Images_Mobiquity/" + entry.fileName(), null, outputStream, null);
                     image_files.add(file);
 
-                    DropboxAPI.DropboxLink shareLink = dropbox.share(entry.path);
-//
-//                    shareAddress.add(getShareURL(shareLink.url).replaceFirst("https://www", "https://dl"));
-                    Log.i("dropbox share link " , shareLink.url);
                 }
 
             } catch (DropboxException e) {
@@ -494,47 +470,9 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
         protected void onPostExecute(ArrayList<File> result) {
 
             images_files = result;
-//            if(images_files.size()>0) {
-//                for (File file1 : images_files) {
-//
-//                    BitmapFactory.Options options = new BitmapFactory.Options();
-//                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//                    try {
-//                        imagesBitmap.add(BitmapFactory.decodeStream(new FileInputStream(file1), null, options));
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
             mDialog.hide();
-
-                refreshDisplay();
-
-
+            refreshDisplay();
         }
-
-    }
-
-    String getShareURL(String strURL) {
-        URLConnection conn = null;
-        String redirectedUrl = null;
-        try {
-            URL inputURL = new URL(strURL);
-            conn = inputURL.openConnection();
-            conn.connect();
-
-            InputStream is = conn.getInputStream();
-            System.out.println("Redirected URL: " + conn.getURL());
-            redirectedUrl = conn.getURL().toString();
-            is.close();
-
-        } catch (MalformedURLException e) {
-//            Log.d(TAG, "Please input a valid URL");
-        } catch (IOException ioe) {
-//            Log.d(TAG, "Can not connect to the URL");
-        }
-
-        return redirectedUrl;
     }
 
     private void refreshDisplay() {
@@ -544,6 +482,5 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
             adapter = new ImageAdapter(this, R.layout.list_image_display, images_files);
             setListAdapter(adapter);
         }
-
     }
 }
