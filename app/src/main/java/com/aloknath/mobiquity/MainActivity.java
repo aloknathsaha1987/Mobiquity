@@ -1,11 +1,14 @@
 package com.aloknath.mobiquity;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,6 +30,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -34,6 +39,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.aloknath.mobiquity.Adapters.ImageAdapter;
 import com.aloknath.mobiquity.AsyncTasks.UploadFileToDropbox;
+import com.aloknath.mobiquity.GoogleLicense.GPSLicenseActivity;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
@@ -41,8 +47,14 @@ import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
 import com.dropbox.client2.session.TokenPair;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.MapFragment;
 
-public class MainActivity extends ListActivity implements OnClickListener {
+public class MainActivity extends ListActivity implements OnClickListener, GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
     private DropboxAPI<AndroidAuthSession> dropbox;
     public final static String FILE_DIR = "/Images_Mobiquity/";
     private final static String DROPBOX_NAME = "Alok_Dropbox";
@@ -58,11 +70,21 @@ public class MainActivity extends ListActivity implements OnClickListener {
     private ImageAdapter adapter;
     private ProgressDialog mDialog;
     private List<Bitmap> imagesBitmap;
+    private ArrayList<String> files;
+
+    private LocationClient mLocationClient;
+
+    private double latitude;
+    private double longitude;
+    private static final int GPS_ERRORDIALOG_REQUEST = 9001;
+    private boolean startGoogleMaps = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         mDialog = new ProgressDialog(this);
 
@@ -119,6 +141,54 @@ public class MainActivity extends ListActivity implements OnClickListener {
         logIn.setText(isLogged ? "Log out" : "Log in");
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent intent;
+
+        switch (item.getItemId()){
+            case R.id.google_license:
+                intent = new Intent(MainActivity.this, GPSLicenseActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.google_maps:
+
+                // Fetch the image names from the server
+                // Once they are fetched, we can extract their GPS coordinates and display them
+                // accordingly on the map
+                startGoogleMaps = true;
+                if (!isLoggedIn){
+                    Toast.makeText(MainActivity.this, "Please Log in", Toast.LENGTH_SHORT).show();
+
+                }
+                else if(files == null) {
+                    Toast.makeText(MainActivity.this, "Please Retrieve The Images", Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                        intent = new Intent(MainActivity.this, MapDisplayActivity.class);
+                        // Pass the list of strings to the MapDisplayActivity
+                        // To be passed -> files
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("ImageCoordinates", files);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                }
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View v) {
@@ -138,17 +208,62 @@ public class MainActivity extends ListActivity implements OnClickListener {
                 break;
             case R.id.upload_image:
                 createDir();
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                file = new File(getPath(),new Date().getTime()+".jpg");
-                Log.i("The file path:" , getPath());
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                startActivityForResult(intent, TAKE_PHOTO);
+
+                initializeMap();
+
                 break;
 
             default:
                 break;
         }
     }
+
+    private void initializeMap() {
+
+        if (isOnline()) {
+            if (servicesOK()) {
+
+                    LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        mLocationClient = new LocationClient(MainActivity.this, MainActivity.this, MainActivity.this);
+                        mLocationClient.connect();
+                    }else{
+                        Toast.makeText(this, "Location Manager Not Available", Toast.LENGTH_SHORT).show();
+                    }
+
+            }
+        }else {
+            Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean servicesOK() {
+        int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
+        if (isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+        }
+        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERRORDIALOG_REQUEST);
+            dialog.show();
+        }
+        else {
+            Toast.makeText(this, "Can't connect to Google Play services", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -246,7 +361,51 @@ public class MainActivity extends ListActivity implements OnClickListener {
 
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
 
+        Location mLocation = mLocationClient.getLastLocation();
+        if(mLocation == null){
+            Toast.makeText(this, "My Location is not available", Toast.LENGTH_SHORT).show();
+        }else {
+
+            setFileName();
+        }
+
+    }
+
+    private void setFileName() {
+
+        if(mLocationClient.isConnected()) {
+            Location mLocation = mLocationClient.getLastLocation();
+            longitude = mLocation.getLongitude();
+            latitude = mLocation.getLatitude();
+            file = new File(getPath(),String.valueOf(longitude) + ":" +  String.valueOf(latitude) + ".jpg");
+        }else {
+            file = new File(getPath(), new Date().getTime() + ".jpg");
+        }
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Log.i("The file path:" , getPath());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        startActivityForResult(intent, TAKE_PHOTO);
+    }
+
+    @Override
+    public void onDisconnected() {
+        Toast.makeText(this,"Disconnected from the location services", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        String msg = "Location" + location.getLatitude() + "," + location.getLongitude();
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Toast.makeText(this,"Connection the location services Failed", Toast.LENGTH_SHORT).show();
+    }
 
     private class ListDropboxFiles extends AsyncTask<Void, Void, ArrayList<File>> {
 
@@ -270,7 +429,7 @@ public class MainActivity extends ListActivity implements OnClickListener {
 
         @Override
         protected ArrayList<File> doInBackground(Void... params) {
-            ArrayList<String> files = new ArrayList<>();
+            files = new ArrayList<>();
             ArrayList<File> image_files = new ArrayList<>();
             try {
                 DropboxAPI.Entry directory = dropbox.metadata(path, 1000, null, true, null);
@@ -311,7 +470,9 @@ public class MainActivity extends ListActivity implements OnClickListener {
 //                }
 //            }
             mDialog.hide();
-            refreshDisplay();
+
+                refreshDisplay();
+
 
         }
 
