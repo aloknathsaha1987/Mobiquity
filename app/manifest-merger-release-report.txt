@@ -96,7 +96,7 @@ ADDED from AndroidManifest.xml:32:9
 		ADDED from AndroidManifest.xml:32:20
 	android:value
 		ADDED from AndroidManifest.xml:33:13
-activity#com.aloknath.mobiquity.MainActivity
+activity#com.aloknath.mobiquity.Activities.MainActivity
 ADDED from AndroidManifest.xml:35:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:38:13
@@ -144,7 +144,7 @@ category#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:59:17
 	android:name
 		ADDED from AndroidManifest.xml:59:27
-activity#com.aloknath.mobiquity.ImageDisplayActivity
+activity#com.aloknath.mobiquity.Activities.ImageDisplayActivity
 ADDED from AndroidManifest.xml:63:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:64:13
@@ -152,7 +152,7 @@ ADDED from AndroidManifest.xml:63:9
 		ADDED from AndroidManifest.xml:65:13
 	android:name
 		ADDED from AndroidManifest.xml:63:19
-activity#com.aloknath.mobiquity.MapDisplayActivity
+activity#com.aloknath.mobiquity.Activities.MapDisplayActivity
 ADDED from AndroidManifest.xml:67:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:67:54

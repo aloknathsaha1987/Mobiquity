@@ -33,7 +33,7 @@
             android:value="AIzaSyApHWW4KSU6u84zO3L898H7DuCzu6qN_P8"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -66,11 +66,11 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ImageDisplayActivity"
+        <activity android:name=".Activities.ImageDisplayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             />
-        <activity android:name=".MapDisplayActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.MapDisplayActivity" android:screenOrientation="portrait"/>
         <activity android:name=".GoogleLicense.GPSLicenseActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="landscape"/>
