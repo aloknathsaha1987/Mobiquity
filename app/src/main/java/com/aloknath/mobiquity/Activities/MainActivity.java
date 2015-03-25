@@ -187,7 +187,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -421,7 +420,6 @@ public class MainActivity extends ListActivity implements OnClickListener, Googl
             }
             Address add = list.get(0);
             String city = add.getLocality();
-
 
             file = new File(getPath(),city + ":" + String.valueOf(longitude) + ":" +  String.valueOf(latitude) + ".jpg" );
 

@@ -84,6 +84,12 @@ MERGED from com.android.support:support-v4:21.0.3:16:5
 		ADDED from AndroidManifest.xml:27:9
 	android:theme
 		ADDED from AndroidManifest.xml:29:9
+meta-data#com.facebook.sdk.ApplicationId
+ADDED from AndroidManifest.xml:30:9
+	android:name
+		ADDED from AndroidManifest.xml:30:20
+	android:value
+		ADDED from AndroidManifest.xml:30:66
 meta-data#com.google.android.gms.version
 ADDED from AndroidManifest.xml:31:9
 	android:name
@@ -144,28 +150,36 @@ category#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:59:17
 	android:name
 		ADDED from AndroidManifest.xml:59:27
-activity#com.aloknath.mobiquity.Activities.ImageDisplayActivity
+activity#com.facebook.LoginActivity
 ADDED from AndroidManifest.xml:63:9
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:64:13
-	android:theme
+		ADDED from AndroidManifest.xml:66:13
+	android:label
 		ADDED from AndroidManifest.xml:65:13
 	android:name
-		ADDED from AndroidManifest.xml:63:19
-activity#com.aloknath.mobiquity.Activities.MapDisplayActivity
-ADDED from AndroidManifest.xml:67:9
-	android:screenOrientation
-		ADDED from AndroidManifest.xml:67:54
-	android:name
-		ADDED from AndroidManifest.xml:67:19
-activity#com.aloknath.mobiquity.GoogleLicense.GPSLicenseActivity
-ADDED from AndroidManifest.xml:68:9
+		ADDED from AndroidManifest.xml:64:13
+activity#com.aloknath.mobiquity.Activities.ImageDisplayActivity
+ADDED from AndroidManifest.xml:69:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:70:13
 	android:theme
-		ADDED from AndroidManifest.xml:69:13
+		ADDED from AndroidManifest.xml:71:13
 	android:name
-		ADDED from AndroidManifest.xml:68:19
+		ADDED from AndroidManifest.xml:69:19
+activity#com.aloknath.mobiquity.Activities.MapDisplayActivity
+ADDED from AndroidManifest.xml:73:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:73:65
+	android:name
+		ADDED from AndroidManifest.xml:73:19
+activity#com.aloknath.mobiquity.GoogleLicense.GPSLicenseActivity
+ADDED from AndroidManifest.xml:74:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:76:13
+	android:theme
+		ADDED from AndroidManifest.xml:75:13
+	android:name
+		ADDED from AndroidManifest.xml:74:19
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.android.support:appcompat-v7:21.0.3:15:5
