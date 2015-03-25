@@ -54,7 +54,7 @@ public class ImageDisplayActivity extends Activity {
 
     }
 
-    
+
     @Override
     public void onBackPressed() {
         finish();
